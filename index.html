@@ -71,9 +71,9 @@
 <span class="g">mtre = (pred_pose.inverse()(f) - true_pose.inverse()(f)).norm(dim=-1).mean(dim=-1)</span></pre>
 
       <ol class="why">
-        <li>DiffDRR's <code>pose</code> places the camera in CT coordinates: <code>Detector.forward</code> applies it to the source and detector, and <code>perspective_projection</code> inverts it before projecting CT points.</li>
-        <li><code>pose(f)</code> reads the CT coordinates of the fiducials as camera coordinates. Those points (purple) lie around the X-ray source, which is the camera origin.</li>
-        <li>Both point sets undergo the same rigid error. A translation moves both equally. A rotation about the anatomy moves each point by the angle times its distance to the rotation centre: about <b id="radius">–</b> mm for the fiducials and about <b id="lever">–</b> mm for the purple points.</li>
+        <li><code>pose</code> maps camera points to CT points. That is why <code>perspective_projection</code> uses <code>pose.inverse()</code> for CT points.</li>
+        <li><code>pose(f)</code> treats the CT fiducials as camera points. So xvr's mTRE compares the purple points, which sit near the X-ray source.</li>
+        <li>Both sets of points move with the same error. A shift moves both by the same amount. A rotation moves each point in proportion to its distance from the rotation centre: about <b id="radius">–</b> mm for the fiducials, but about <b id="lever">–</b> mm for the purple points.</li>
       </ol>
 
       <p class="data">DeepFluoro subject01, X-ray 001, ground truth from <a href="https://huggingface.co/datasets/eigenvivek/xvr-data">xvr-data</a> (Grupp et al. 2020, CC BY-NC 4.0). Mesh from mask labels 1, 2, 3, 4 and 7, simplified. X-ray rescaled for display. The registration preset is an xvr single-view result for this X-ray.</p>
