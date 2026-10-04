@@ -1,0 +1,62 @@
+:root {
+  --ink: #182b3c; --muted: #6f8190; --line: #dce4e9; --bg: #f2f5f7;
+  --green: #12a663; --purple: #9b4dff; --orange: #ff8a1f;
+  font-family: Inter, "Segoe UI", system-ui, sans-serif; font-size: 13px; color: var(--ink);
+}
+* { box-sizing: border-box; }
+body { margin: 0; height: 100vh; height: 100dvh; display: flex; flex-direction: column; background: var(--bg); }
+button, select, input { font: inherit; }
+code { font-family: Consolas, "SFMono-Regular", monospace; font-size: 11.5px; background: #eef2f6; padding: 1px 4px; border-radius: 3px; }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; padding: 8px 14px; background: white; border-bottom: 1px solid var(--line); }
+h1 { margin: 0; font-size: 16px; font-weight: 650; }
+.controls { display: flex; align-items: center; gap: 10px; margin-left: auto; flex-wrap: wrap; }
+select { border: 1px solid var(--line); border-radius: 4px; background: white; color: #4d6373; padding: 4px 6px; }
+.seg { border: 0; margin: 0; padding: 0; display: flex; gap: 3px; }
+.seg label { position: relative; }
+.seg input { position: absolute; opacity: 0; }
+.seg span { display: block; padding: 4px 10px; border-radius: 4px; background: #f1f5f7; border: 1px solid transparent; font-weight: 600; cursor: pointer; }
+.seg input:checked + span { background: #e7f4f8; border-color: #9bcbd9; color: #126e8b; }
+.seg input:focus-visible + span, button:focus-visible, select:focus-visible { outline: 2px solid #55b9d9; outline-offset: 2px; }
+.check { color: #4d6373; white-space: nowrap; }
+main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 430px; gap: 8px; padding: 8px; }
+.scene { position: relative; min-height: 0; background: #f7f9fb; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+#scene { width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
+#scene:active { cursor: grabbing; }
+.badge { position: absolute; top: 8px; left: 10px; font-size: 11px; color: #a3541a; background: #fff3e8ee; border: 1px solid #f3c79e; padding: 3px 7px; border-radius: 4px; pointer-events: none; }
+.badge:empty { display: none; }
+.legend { position: absolute; left: 10px; right: 10px; bottom: 8px; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11px; color: #5b6e7c; pointer-events: none; }
+.legend span { display: flex; align-items: center; gap: 5px; }
+.legend b { font-weight: 400; }
+.legend i { width: 10px; height: 10px; border-radius: 2px; }
+.legend i.ln { width: 14px; height: 3px; }
+.legend .hint { margin-left: auto; color: #98a6b0; }
+aside { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.card { background: white; border: 1px solid var(--line); border-left: 4px solid; border-radius: 6px; padding: 8px 10px; }
+.card.green { border-left-color: var(--green); }
+.card.purple { border-left-color: var(--purple); }
+.label { font-size: 11.5px; font-weight: 600; }
+.green .label { color: #0c8a52; }
+.purple .label { color: #7a35d6; }
+.value { color: var(--muted); }
+.value strong { font-size: 30px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.sub { font-size: 11px; color: var(--muted); }
+.facts { margin: -2px 2px 0; font-size: 12px; color: #4d6373; }
+.presets { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.presets button { border: 1px solid var(--line); background: white; border-radius: 5px; padding: 7px 8px; cursor: pointer; text-align: left; }
+.presets button:hover { background: #eef5f8; }
+.presets button.on { background: #e7f4f8; border-color: #9bcbd9; color: #126e8b; font-weight: 600; }
+.code { margin: 0; background: #1d2733; color: #d7e0e8; border-radius: 6px; padding: 10px 12px; font-family: Consolas, "SFMono-Regular", monospace; font-size: 11.5px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+.code .c { color: #8b9aa8; }
+.code .p { color: #c9a7ff; }
+.code .g { color: #6fe0a6; }
+.why { margin: 0; padding-left: 20px; font-size: 12.5px; line-height: 1.6; color: #34495a; }
+.why li + li { margin-top: 5px; }
+.data { margin: 0; font-size: 11px; color: var(--muted); line-height: 1.5; }
+.data a { color: #177b9b; }
+@media (max-width: 980px) {
+  body { height: auto; }
+  main { display: flex; flex-direction: column; }
+  .scene { height: 62vh; min-height: 380px; }
+  .legend .hint { display: none; }
+}

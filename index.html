@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>xvr mTRE: where is the error measured?</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>xvr's mTRE measures the error around the X-ray source, not at the anatomy</h1>
+    <div class="controls">
+      <fieldset class="seg">
+        <label><input type="radio" name="frame" value="carm" checked><span>C-arm fixed</span></label>
+        <label><input type="radio" name="frame" value="anatomy"><span>Anatomy fixed</span></label>
+      </fieldset>
+      <select id="view" aria-label="3D view">
+        <option value="side" selected>Side view</option>
+        <option value="oblique">Oblique view</option>
+        <option value="beam">Beam's-eye view</option>
+      </select>
+      <select id="exaggerate" aria-label="Motion exaggeration">
+        <option value="1">Motion ×1 (true scale)</option>
+        <option value="10" selected>Motion ×10</option>
+        <option value="30">Motion ×30</option>
+      </select>
+      <label class="check"><input type="checkbox" id="animate"> Animate</label>
+    </div>
+  </header>
+
+  <main>
+    <section class="scene">
+      <canvas id="scene" aria-label="3D view: drag to rotate, scroll to zoom, double-click to reset"></canvas>
+      <div class="badge" id="badge"></div>
+      <div class="legend">
+        <span><i style="background:#c9d0d6"></i>Ground truth</span>
+        <span><i style="background:#ff8a1f"></i><b id="legend-moved">Anatomy as registered</b></span>
+        <span><i class="ln" style="background:#12a663"></i>Fiducial error at the anatomy</span>
+        <span><i class="ln" style="background:#9b4dff"></i>Displacement of the points xvr measures</span>
+        <span class="hint">Drag to rotate · scroll to zoom · double-click to reset</span>
+      </div>
+    </section>
+
+    <aside>
+      <div class="cards">
+        <article class="card green">
+          <div class="label">Error at the anatomy <code>pose.inverse()(f)</code></div>
+          <div class="value"><strong id="tre">–</strong> mm</div>
+          <div class="sub">max <span id="tre-max">–</span> mm</div>
+        </article>
+        <article class="card purple">
+          <div class="label">xvr mTRE <code>pose(f)</code></div>
+          <div class="value"><strong id="xvr">–</strong> mm</div>
+          <div class="sub">max <span id="xvr-max">–</span> mm</div>
+        </article>
+      </div>
+      <p class="facts" id="facts"></p>
+
+      <div class="presets" role="group" aria-label="Error presets">
+        <button data-preset="tilt" class="on">Rotate anatomy 1° (out of plane)</button>
+        <button data-preset="inplane">Rotate anatomy 1° (in plane)</button>
+        <button data-preset="shift">Translate anatomy 1 mm</button>
+        <button data-preset="result">xvr registration of this X-ray</button>
+      </div>
+
+      <pre class="code"><span class="c"># xvr experiments/evaluate.py, line 49</span>
+<span class="p">mtre = (pred_pose(f) - true_pose(f)).norm(dim=-1).mean(dim=-1)</span>
+
+<span class="c"># pose maps camera → CT, so CT points need its inverse,
+# as in DRR.perspective_projection</span>
+<span class="g">mtre = (pred_pose.inverse()(f) - true_pose.inverse()(f)).norm(dim=-1).mean(dim=-1)</span></pre>
+
+      <ol class="why">
+        <li>DiffDRR's <code>pose</code> places the camera in CT coordinates: <code>Detector.forward</code> applies it to the source and detector, and <code>perspective_projection</code> inverts it before projecting CT points.</li>
+        <li><code>pose(f)</code> reads the CT coordinates of the fiducials as camera coordinates. Those points (purple) lie around the X-ray source, which is the camera origin.</li>
+        <li>Both point sets undergo the same rigid error. A translation moves both equally. A rotation about the anatomy moves each point by the angle times its distance to the rotation centre: about <b id="radius">–</b> mm for the fiducials and about <b id="lever">–</b> mm for the purple points.</li>
+      </ol>
+
+      <p class="data">DeepFluoro subject01, X-ray 001, ground truth from <a href="https://huggingface.co/datasets/eigenvivek/xvr-data">xvr-data</a> (Grupp et al. 2020, CC BY-NC 4.0). Mesh from mask labels 1, 2, 3, 4 and 7, simplified. X-ray rescaled for display. The registration preset is an xvr single-view result for this X-ray.</p>
+    </aside>
+  </main>
+
+  <script src="data/scene.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
